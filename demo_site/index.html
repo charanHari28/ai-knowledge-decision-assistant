@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Greenfield University — Student Services (demo external site)</title>
+<style>
+  body { margin: 0; font: 16px/1.6 Georgia, "Times New Roman", serif; color: #1d2a1d; background: #f3f6ef; }
+  header { background: #234d20; color: #fff; padding: 18px 24px; }
+  header h1 { margin: 0; font-size: 22px; }
+  nav { background: #2f6a2b; padding: 8px 24px; }
+  nav a { color: #e3f0dc; margin-right: 18px; text-decoration: none; font-family: system-ui, sans-serif; font-size: 14px; }
+  main { max-width: 820px; margin: 0 auto; padding: 32px 24px 120px; }
+  .note { font-family: system-ui, sans-serif; font-size: 14px; background: #fff8d6; border: 1px solid #e8d77c; border-radius: 8px; padding: 12px 14px; }
+  .inline { margin-top: 28px; }
+  code { background: #e9efe4; padding: 1px 5px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<header><h1>Greenfield University · Student Services</h1></header>
+<nav><a href="#">Admissions</a><a href="#">Financial aid</a><a href="#">Hostels</a><a href="#">Examinations</a></nav>
+<main>
+  <h2>Financial aid and scholarships</h2>
+  <p>Questions about scholarships, hostels or exams? Use the chat button in the corner — it answers from the university's official handbooks and tells you which page the answer came from.</p>
+
+  <div class="note" id="note">
+    This page is a stand-in for an organization's own website, served from a <strong>different origin</strong> than the assistant.
+    Open it as <code>index.html?token=ast_…&amp;host=http://localhost:8000</code>, or paste the embed code from the dashboard below this note.
+  </div>
+
+  <div class="inline" id="inline"></div>
+
+  <!-- ===== Paste the embed code from the dashboard here, e.g.:
+  <script src="http://localhost:8000/embed.js" data-assistant="ast_XXXXXXXX" async></script>
+  ===== -->
+</main>
+<script>
+  // Demo helper: inject the embed script using ?token=…&host=… so you don't have to edit this file.
+  const p = new URLSearchParams(location.search);
+  const token = p.get("token"), host = (p.get("host") || "http://localhost:8000").replace(/\/$/, "");
+  if (token) {
+    const s = document.createElement("script");
+    s.src = host + "/embed.js";
+    s.async = true;
+    s.dataset.assistant = token;
+    s.dataset.label = "Ask Student Services";
+    document.body.appendChild(s);
+    document.getElementById("note").innerHTML = "Embedded assistant loaded from <code>" + host.replace(/[<>&]/g, "") + "</code>. Use the button in the bottom-right corner.";
+    if (p.get("inline") === "1") {
+      document.getElementById("inline").innerHTML = '<h3>Or ask here</h3><iframe title="Assistant" src="' + host + "/a/" + encodeURIComponent(token) +
+        '?embed=1" style="width:100%;max-width:420px;height:560px;border:1px solid #ccd;border-radius:12px"></iframe>';
+    }
+  }
+</script>
+</body>
+</html>

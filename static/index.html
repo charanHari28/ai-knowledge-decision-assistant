@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rulebook — sign in</title>
+<link rel="stylesheet" href="/static/app.css">
+<style>
+  .wrap { min-height: 100vh; display: grid; grid-template-columns: 1.1fr 1fr; }
+  .story { background: var(--ink); color: #fff; padding: 56px 56px 40px; display: flex; flex-direction: column; justify-content: space-between; }
+  .brand { font-family: var(--display); font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+  .brand svg { flex: none; }
+  .story h1 { font-size: clamp(30px, 3.6vw, 46px); line-height: 1.08; max-width: 15ch; margin: 40px 0 18px; }
+  .story p { color: #c5cfdf; max-width: 46ch; margin: 0 0 28px; }
+  /* the memorable bit: a live-looking rule check */
+  .check { background: #213152; border-radius: var(--radius-lg); padding: 18px 20px; max-width: 440px; }
+  .check .q { color: #dfe6f2; font-size: 14px; margin-bottom: 12px; }
+  .check .row { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-top: 1px solid #2f4268; font-size: 14px; }
+  .chip { font-size: 12px; font-weight: 700; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+  .chip.pass { background: #d7efe1; color: var(--pass); } .chip.fail { background: #f8ddd6; color: var(--fail); }
+  .check .verdict { margin-top: 10px; font-family: var(--display); font-size: 18px; }
+  .foot { color: #8fa0bd; font-size: 13px; margin-top: 32px; }
+  .panel { display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
+  .box { width: 100%; max-width: 380px; }
+  .tabs { display: flex; gap: 4px; background: #e9edf3; border-radius: 999px; padding: 4px; margin-bottom: 24px; }
+  .tabs button { flex: 1; border: 0; background: transparent; border-radius: 999px; padding: 8px; font-weight: 600; cursor: pointer; color: var(--ink-soft); }
+  .tabs button[aria-selected="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgba(23,35,59,.12); }
+  .box h2 { font-size: 26px; margin-bottom: 6px; }
+  .box .btn { width: 100%; justify-content: center; padding: 11px; margin-top: 4px; }
+  @media (max-width: 860px) { .wrap { grid-template-columns: 1fr; } .story { padding: 32px 20px; } .story h1 { margin-top: 24px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="story">
+    <div>
+      <div class="brand">
+        <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect x="3" y="3" width="22" height="22" rx="5" fill="none" stroke="#7fd1d6" stroke-width="2.4"/><path d="M8.5 14.5l3.5 3.5 7.5-8" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Rulebook
+      </div>
+      <h1>Your policies, answered and decided.</h1>
+      <p>Upload your organization's PDFs. Visitors ask questions in plain language; answers cite the exact page, and eligibility questions are checked rule by rule.</p>
+      <div class="check" aria-label="Example eligibility check">
+        <div class="q">“3rd year, GPA 8.7, 80% attendance, I hold the sports scholarship. Merit scholarship?”</div>
+        <div class="row"><span>Year 2 or above</span><span class="chip pass">Met</span></div>
+        <div class="row"><span>GPA at least 8.5</span><span class="chip pass">Met</span></div>
+        <div class="row"><span>Attendance at least 75%</span><span class="chip pass">Met</span></div>
+        <div class="row"><span>No other institutional scholarship</span><span class="chip fail">Not met</span></div>
+        <div class="verdict">Not eligible · Scholarship_Rules.pdf, page 2</div>
+      </div>
+    </div>
+    <div class="foot">Each organization's documents stay private to its own assistant.</div>
+  </section>
+
+  <section class="panel">
+    <div class="box">
+      <div class="tabs" role="tablist">
+        <button role="tab" id="tab-login" aria-selected="true">Log in</button>
+        <button role="tab" id="tab-register" aria-selected="false">Create account</button>
+      </div>
+
+      <form id="login-form" novalidate>
+        <h2>Welcome back</h2>
+        <p class="muted">Log in to manage your knowledge base and assistant.</p>
+        <div class="field"><label for="l-email">Email</label><input id="l-email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="l-pass">Password</label><input id="l-pass" type="password" autocomplete="current-password" required></div>
+        <div class="alert error hidden" role="alert"></div>
+        <button class="btn" type="submit">Log in</button>
+      </form>
+
+      <form id="register-form" class="hidden" novalidate>
+        <h2>Create your organization</h2>
+        <p class="muted">You'll get a private knowledge base and a shareable assistant link.</p>
+        <div class="field"><label for="r-org">Organization name</label><input id="r-org" autocomplete="organization" required></div>
+        <div class="field"><label for="r-email">Admin email</label><input id="r-email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="r-pass">Password</label><input id="r-pass" type="password" autocomplete="new-password" minlength="8" required placeholder="At least 8 characters"></div>
+        <div class="alert error hidden" role="alert"></div>
+        <button class="btn" type="submit">Create account</button>
+      </form>
+    </div>
+  </section>
+</div>
+<script>
+  if (localStorage.getItem("session")) location.replace("/dashboard");
+  const show = (which) => {
+    document.getElementById("tab-login").setAttribute("aria-selected", which === "login");
+    document.getElementById("tab-register").setAttribute("aria-selected", which === "register");
+    document.getElementById("login-form").classList.toggle("hidden", which !== "login");
+    document.getElementById("register-form").classList.toggle("hidden", which !== "register");
+  };
+  document.getElementById("tab-login").onclick = () => show("login");
+  document.getElementById("tab-register").onclick = () => show("register");
+
+  async function submit(form, url, body) {
+    const err = form.querySelector(".alert"), btn = form.querySelector("button[type=submit]");
+    err.classList.add("hidden"); btn.disabled = true;
+    try {
+      const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error?.message || "Something went wrong.");
+      localStorage.setItem("session", data.token);
+      location.href = "/dashboard";
+    } catch (e) { err.textContent = e.message; err.classList.remove("hidden"); }
+    finally { btn.disabled = false; }
+  }
+  document.getElementById("login-form").onsubmit = (e) => { e.preventDefault();
+    submit(e.target, "/api/auth/login", { email: document.getElementById("l-email").value, password: document.getElementById("l-pass").value }); };
+  document.getElementById("register-form").onsubmit = (e) => { e.preventDefault();
+    submit(e.target, "/api/auth/register", { org_name: document.getElementById("r-org").value, email: document.getElementById("r-email").value, password: document.getElementById("r-pass").value }); };
+</script>
+</body>
+</html>

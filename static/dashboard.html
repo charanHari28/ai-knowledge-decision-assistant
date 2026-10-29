@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rulebook — dashboard</title>
+<link rel="stylesheet" href="/static/app.css">
+<style>
+  header.top { background: var(--ink); color: #fff; }
+  header.top .in { max-width: 1120px; margin: 0 auto; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .brand { font-family: var(--display); font-weight: 700; font-size: 19px; display: flex; gap: 9px; align-items: center; }
+  .org { display: flex; align-items: center; gap: 14px; font-size: 14px; color: #c5cfdf; }
+  .org strong { color: #fff; }
+  .org .btn.secondary { color: #fff; border-color: #3a4b6d; padding: 6px 14px; }
+  main { max-width: 1120px; margin: 0 auto; padding: 28px 20px 60px; display: grid; grid-template-columns: 1fr 360px; gap: 24px; align-items: start; }
+  section.block { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 22px; }
+  section.block + section.block { margin-top: 24px; }
+  .block h2 { font-size: 20px; }
+  .head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+  .meter { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--ink-soft); }
+  .meter .bar { width: 120px; height: 6px; background: var(--paper); border-radius: 99px; overflow: hidden; }
+  .meter .bar i { display: block; height: 100%; background: var(--signal); }
+
+  .drop { display: block; border: 2px dashed var(--line); border-radius: var(--radius-lg); padding: 22px; text-align: center; cursor: pointer; background: var(--paper); }
+  .drop.over { border-color: var(--signal); background: var(--signal-soft); }
+  .drop strong { display: block; font-size: 16px; }
+  .drop .muted { font-size: 13px; }
+
+  table.docs { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px; }
+  .docs th { text-align: left; font-weight: 600; color: var(--ink-soft); font-size: 12.5px; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  .docs td { padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  .docs td.name { font-weight: 600; word-break: break-word; }
+  .docs .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .linkish { background: none; border: 0; color: var(--signal); cursor: pointer; padding: 0; font-weight: 600; }
+  .empty { text-align: center; padding: 26px 10px 8px; color: var(--ink-soft); }
+
+  .url-row { display: flex; gap: 8px; align-items: stretch; }
+  .url-row input { flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 9px 10px; background: var(--paper); font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; margin: 16px 0 8px; }
+  .seg button { border: 0; background: none; border-radius: 999px; padding: 5px 12px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--ink-soft); }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+  .side .btn { margin-top: 10px; }
+  .small { font-size: 13px; }
+
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 4px; }
+  .stat { border-radius: var(--radius-sm); padding: 12px; background: var(--paper); }
+  .stat b { display: block; font-family: var(--display); font-size: 26px; line-height: 1.1; }
+  .stat span { font-size: 12.5px; color: var(--ink-soft); }
+  .stat.ok b { color: var(--pass); } .stat.no b { color: var(--fail); } .stat.rev b { color: var(--unknown); }
+  ul.recent { list-style: none; padding: 0; margin: 14px 0 0; font-size: 13px; }
+  ul.recent li { padding: 8px 0; border-top: 1px solid var(--line); display: grid; gap: 2px; }
+  .tag { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: var(--app-bg); color: var(--app); margin-right: 4px; }
+  .tag.answered { background: var(--pass-bg); color: var(--pass); } .tag.not_found { background: var(--fail-bg); color: var(--fail); }
+  .tag.needs_info, .tag.needs_review { background: var(--unknown-bg); color: var(--unknown); }
+
+  dialog { border: 0; border-radius: var(--radius-lg); padding: 0; width: min(760px, 94vw); box-shadow: 0 20px 60px rgba(23,35,59,.3); }
+  dialog::backdrop { background: rgba(23,35,59,.45); }
+  dialog .dh { padding: 18px 22px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  dialog .db { padding: 6px 22px 20px; max-height: 70vh; overflow: auto; }
+  .rule { padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .rule .cond { font-weight: 600; } .rule .src { color: var(--ink-soft); font-size: 13px; margin-top: 2px; }
+  .policy-name { font-family: var(--display); font-size: 16px; margin-top: 14px; }
+
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 9px 16px; border-radius: 999px; font-size: 14px; z-index: 50; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } .docs .hide-sm { display: none; } }
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <div class="brand"><svg width="24" height="24" viewBox="0 0 28 28" aria-hidden="true"><rect x="3" y="3" width="22" height="22" rx="5" fill="none" stroke="#7fd1d6" stroke-width="2.4"/><path d="M8.5 14.5l3.5 3.5 7.5-8" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Rulebook</div>
+  <div class="org"><span>Signed in as <strong id="org-name">…</strong></span><button class="btn secondary" id="logout">Log out</button></div>
+</div></header>
+
+<main>
+  <div>
+    <section class="block" aria-labelledby="kb-h">
+      <div class="head">
+        <h2 id="kb-h">Knowledge base</h2>
+        <div class="meter"><span id="doc-count">0 of 10 documents</span><span class="bar"><i id="doc-bar" style="width:0"></i></span></div>
+      </div>
+      <label class="drop" id="drop" tabindex="0">
+        <input type="file" id="file" accept="application/pdf,.pdf" multiple hidden>
+        <strong>Drop PDFs here or choose files</strong>
+        <span class="muted" id="limits-text">PDF only · up to 20 pages and 10 MB each</span>
+      </label>
+      <div id="upload-msgs"></div>
+      <table class="docs" id="docs-table">
+        <thead><tr><th>Document</th><th class="num">Pages</th><th class="num hide-sm">Size</th><th class="num hide-sm">Passages</th><th class="num">Rules</th><th></th></tr></thead>
+        <tbody id="docs"></tbody>
+      </table>
+      <div class="empty hidden" id="docs-empty">No documents yet. Upload your policies, handbooks or FAQs to get started.</div>
+    </section>
+
+    <section class="block" aria-labelledby="usage-h">
+      <div class="head"><h2 id="usage-h">Questions from visitors</h2><button class="linkish" id="refresh-usage">Refresh</button></div>
+      <div class="stats" id="stats"></div>
+      <ul class="recent" id="recent"></ul>
+    </section>
+  </div>
+
+  <aside class="side">
+    <section class="block" aria-labelledby="as-h">
+      <div class="head"><h2 id="as-h">Your assistant</h2></div>
+      <p class="small muted" style="margin-top:0">Anyone with this link can ask questions about your documents. No login needed.</p>
+      <div class="url-row">
+        <input id="url" readonly aria-label="Assistant URL">
+        <button class="btn secondary" data-copy="url">Copy</button>
+      </div>
+      <a class="btn" id="open" target="_blank" rel="noopener">Open assistant</a>
+
+      <div class="seg" role="group" aria-label="Embed type">
+        <button aria-pressed="true" data-embed="script">Chat bubble</button>
+        <button aria-pressed="false" data-embed="iframe">Inline frame</button>
+      </div>
+      <p class="small muted" id="embed-help" style="margin:0 0 8px">Paste before &lt;/body&gt; on any page to add a floating chat button.</p>
+      <pre class="code" id="embed"></pre>
+      <button class="btn secondary" data-copy="embed">Copy embed code</button>
+
+      <hr style="border:0;border-top:1px solid var(--line);margin:20px 0 14px">
+      <p class="small muted" style="margin:0">Regenerating the link disables the old link and every page that embeds it.</p>
+      <button class="btn danger" id="regen" style="padding-left:0">Regenerate link</button>
+      <p class="small muted" id="llm" style="margin:10px 0 0"></p>
+    </section>
+  </aside>
+</main>
+
+<dialog id="rules-dialog" aria-labelledby="rules-title">
+  <div class="dh"><h2 id="rules-title" style="font-size:18px">Rules</h2><button class="btn secondary" onclick="this.closest('dialog').close()">Close</button></div>
+  <div class="db" id="rules-body"></div>
+</dialog>
+
+<script>
+const session = localStorage.getItem("session");
+if (!session) location.replace("/");
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+let assistant = null, embedKind = "script";
+
+async function api(path, opts = {}) {
+  const r = await fetch(path, { ...opts, headers: { ...(opts.headers || {}), Authorization: "Bearer " + session } });
+  if (r.status === 401) { localStorage.removeItem("session"); location.replace("/"); throw new Error("Session expired"); }
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.error?.message || "Request failed.");
+  return data;
+}
+function toast(msg) { const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; document.body.append(t); setTimeout(() => t.remove(), 1800); }
+const kb = (b) => b > 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.round(b / 1024) + " KB";
+
+async function loadMe() { $("org-name").textContent = (await api("/api/auth/me")).name; }
+
+async function loadDocs() {
+  const { documents, limits } = await api("/api/documents");
+  $("doc-count").textContent = `${limits.used_documents} of ${limits.max_documents} documents`;
+  $("doc-bar").style.width = (100 * limits.used_documents / limits.max_documents) + "%";
+  $("limits-text").textContent = `PDF only · up to ${limits.max_pages} pages and ${limits.max_mb} MB each`;
+  $("docs-empty").classList.toggle("hidden", documents.length > 0);
+  $("docs-table").classList.toggle("hidden", documents.length === 0);
+  $("docs").innerHTML = documents.map((d) => `
+    <tr>
+      <td class="name">${esc(d.filename)}<div class="small muted" style="font-weight:400">Added ${esc(d.uploaded_at)} UTC</div></td>
+      <td class="num">${d.page_count}</td>
+      <td class="num hide-sm">${kb(d.size_bytes)}</td>
+      <td class="num hide-sm">${d.chunk_count}</td>
+      <td class="num">${d.rule_count ? `<button class="linkish" data-rules="${d.id}">${d.rule_count}</button>` : "0"}</td>
+      <td class="num"><button class="btn danger" data-del="${d.id}" data-name="${esc(d.filename)}">Delete</button></td>
+    </tr>`).join("");
+}
+
+async function upload(files) {
+  if (!files.length) return;
+  const fd = new FormData();
+  [...files].forEach((f) => fd.append("files", f));
+  $("upload-msgs").innerHTML = `<div class="alert warn">Processing ${files.length} file(s): extracting text, indexing passages and compiling rules…</div>`;
+  try {
+    const r = await fetch("/api/documents", { method: "POST", body: fd, headers: { Authorization: "Bearer " + session } });
+    const data = await r.json();
+    const results = data.results || [{ ok: false, filename: files[0].name, error: data.error?.message || "Upload failed." }];
+    $("upload-msgs").innerHTML = results.map((x) => x.ok
+      ? `<div class="alert ok">Added ${esc(x.filename)}: ${x.pages} pages, ${x.chunks} passages, ${x.rules} decision rules.</div>`
+      : `<div class="alert error">${esc(x.error)}</div>`).join("");
+  } catch (e) { $("upload-msgs").innerHTML = `<div class="alert error">Upload failed: ${esc(e.message)}</div>`; }
+  $("file").value = "";
+  loadDocs();
+}
+
+async function loadAssistant() {
+  assistant = await api("/api/assistant");
+  $("url").value = assistant.url;
+  $("open").href = assistant.url;
+  $("llm").textContent = "Language model: " + assistant.llm;
+  renderEmbed();
+}
+function renderEmbed() {
+  $("embed").textContent = assistant.embed[embedKind];
+  $("embed-help").textContent = embedKind === "script"
+    ? "Paste before </body> on any page to add a floating chat button."
+    : "Paste where the chat should appear inside your page.";
+  document.querySelectorAll("[data-embed]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.embed === embedKind));
+}
+
+async function loadUsage() {
+  const u = await api("/api/usage");
+  $("stats").innerHTML = `
+    <div class="stat"><b>${u.asked}</b><span>Questions asked</span></div>
+    <div class="stat ok"><b>${u.answered}</b><span>Answered</span></div>
+    <div class="stat no"><b>${u.unable_to_answer}</b><span>Not in your documents</span></div>
+    <div class="stat rev"><b>${u.needs_review}</b><span>Needs more info or review</span></div>`;
+  $("recent").innerHTML = u.recent.length ? u.recent.map((q) => `
+    <li><span>${esc(q.question)}</span>
+    <span><span class="tag ${esc(q.outcome)}">${esc(q.outcome.replace("_", " "))}</span><span class="tag">${esc(q.question_type || "")}</span>
+    ${q.decision ? `<span class="muted">${esc(q.decision)}</span>` : ""}</span></li>`).join("")
+    : `<li class="muted">Questions will appear here once visitors start using your assistant.</li>`;
+}
+
+async function showRules(id) {
+  const { document: d, rules } = await api(`/api/documents/${id}/rules`);
+  $("rules-title").textContent = `Decision rules in ${d.filename}`;
+  const byPolicy = {};
+  rules.forEach((r) => (byPolicy[r.policy] ||= []).push(r));
+  const fmt = (r) => Array.isArray(r.value) ? r.value.join(" / ") : (r.value === true ? "yes" : r.value === false ? "no" : r.value);
+  $("rules-body").innerHTML = `<p class="small muted">These conditions were compiled from the document when it was uploaded. The assistant checks a visitor's details against them one by one.</p>` +
+    Object.entries(byPolicy).map(([p, rs]) => `<div class="policy-name">${esc(p)}</div>` + rs.map((r) => `
+      <div class="rule"><div class="cond">${esc(r.label)} ${esc(r.operator)} ${esc(fmt(r))}</div>
+      <div class="src">Page ${r.page}: “${esc(r.source_text)}”</div></div>`).join("")).join("");
+  $("rules-dialog").showModal();
+}
+
+document.addEventListener("click", async (e) => {
+  const t = e.target.closest("button"); if (!t) return;
+  if (t.dataset.copy) { await navigator.clipboard.writeText(t.dataset.copy === "url" ? $("url").value : $("embed").textContent); toast("Copied"); }
+  if (t.dataset.embed) { embedKind = t.dataset.embed; renderEmbed(); }
+  if (t.dataset.rules) showRules(t.dataset.rules);
+  if (t.dataset.del && confirm(`Delete ${t.dataset.name}? The assistant will stop using it immediately.`)) {
+    try { await api(`/api/documents/${t.dataset.del}`, { method: "DELETE" }); toast("Deleted"); loadDocs(); } catch (err) { toast(err.message); }
+  }
+});
+$("regen").onclick = async () => {
+  if (!confirm("Regenerate the assistant link? The current link and all embeds using it will stop working.")) return;
+  assistant = await api("/api/assistant/regenerate", { method: "POST" }); loadAssistant(); toast("New link generated");
+};
+$("logout").onclick = async () => { try { await api("/api/auth/logout", { method: "POST" }); } catch {} localStorage.removeItem("session"); location.replace("/"); };
+$("refresh-usage").onclick = loadUsage;
+$("file").onchange = (e) => upload(e.target.files);
+const drop = $("drop");
+drop.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("file").click(); } };
+["dragenter", "dragover"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", (e) => upload(e.dataTransfer.files));
+
+loadMe(); loadDocs(); loadAssistant(); loadUsage();
+</script>
+</body>
+</html>

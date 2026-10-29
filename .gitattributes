@@ -1,0 +1,6 @@
+# Keep line endings consistent and never touch binary files.
+* text=auto eol=lf
+*.pdf binary
+*.png binary
+*.jpg binary
+*.db binary

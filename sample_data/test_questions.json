@@ -1,0 +1,392 @@
+{
+  "organizations": [
+    {
+      "name": "Greenfield University",
+      "email": "admin@greenfield.example",
+      "password": "greenfield123",
+      "folder": "greenfield_university"
+    },
+    {
+      "name": "Nimbus Technologies",
+      "email": "hr@nimbus.example",
+      "password": "nimbus12345",
+      "folder": "nimbus_technologies"
+    }
+  ],
+  "questions": [
+    {
+      "id": "A1",
+      "org": "greenfield_university",
+      "type": "direct information",
+      "question": "What is the amount of the Merit Scholarship?",
+      "expect": {
+        "outcome": "answered",
+        "contains_any": [
+          "50,000"
+        ],
+        "reference": "Scholarship_Rules.pdf"
+      }
+    },
+    {
+      "id": "A2",
+      "org": "greenfield_university",
+      "type": "policy",
+      "question": "Can a student hold two scholarships at the same time?",
+      "expect": {
+        "outcome": "answered",
+        "contains_any": [
+          "only one"
+        ],
+        "reference": "Scholarship_Rules.pdf"
+      }
+    },
+    {
+      "id": "A3",
+      "org": "greenfield_university",
+      "type": "procedural",
+      "question": "How do I apply for re-evaluation of my exam paper?",
+      "expect": {
+        "outcome": "answered",
+        "contains_any": [
+          "Re-evaluation",
+          "500"
+        ],
+        "reference": "Academic_Policies.pdf"
+      }
+    },
+    {
+      "id": "A4",
+      "org": "greenfield_university",
+      "type": "multi-condition decision (multiple structured decisions)",
+      "question": "I am a 3rd year student with a GPA of 8.7 and 80% attendance, and I already have the Sports Excellence Scholarship. Am I eligible for the Merit Scholarship?",
+      "expect": {
+        "outcome": "answered",
+        "verdict": "NOT_ELIGIBLE",
+        "reference": "Scholarship_Rules.pdf"
+      }
+    },
+    {
+      "id": "A5",
+      "org": "greenfield_university",
+      "type": "multi-condition decision",
+      "question": "I'm in second year, my CGPA is 9.1 and attendance is 82%. I don't have any other scholarship. Can I get the Merit Scholarship?",
+      "expect": {
+        "outcome": "answered",
+        "verdict": "ELIGIBLE",
+        "reference": "Scholarship_Rules.pdf"
+      }
+    },
+    {
+      "id": "A6",
+      "org": "greenfield_university",
+      "type": "multi-condition decision (missing information)",
+      "question": "My family income is 4.5 lakh per year. Am I eligible for need-based financial aid?",
+      "expect": {
+        "outcome": "needs_info",
+        "verdict": "NEEDS_INFO",
+        "reference": "Scholarship_Rules.pdf"
+      }
+    },
+    {
+      "id": "A7",
+      "org": "greenfield_university",
+      "type": "comparison",
+      "question": "Compare the Merit Scholarship and the Sports Excellence Scholarship.",
+      "expect": {
+        "outcome": "answered",
+        "reference": "Scholarship_Rules.pdf"
+      }
+    },
+    {
+      "id": "A8",
+      "org": "greenfield_university",
+      "type": "direct information",
+      "question": "What time do the hostel gates close?",
+      "expect": {
+        "outcome": "answered",
+        "contains_any": [
+          "10:30"
+        ],
+        "reference": "Hostel_Handbook.pdf"
+      }
+    },
+    {
+      "id": "A9",
+      "org": "greenfield_university",
+      "type": "not in knowledge base",
+      "question": "What is the university's policy on international student visas?",
+      "expect": {
+        "outcome": "not_found"
+      }
+    },
+    {
+      "id": "A10",
+      "org": "greenfield_university",
+      "type": "multi-condition decision",
+      "question": "I'm in final year with a CGPA of 7.4, 80% attendance and no active backlogs. Can I sit for campus placements?",
+      "expect": {
+        "outcome": "answered",
+        "verdict": "ELIGIBLE",
+        "reference": "Placement_Policy.pdf"
+      }
+    },
+    {
+      "id": "A11",
+      "org": "greenfield_university",
+      "type": "multi-condition decision",
+      "question": "I am a 3rd year student with a GPA of 8.2. Can I get internship credit for a 16 week internship?",
+      "expect": {
+        "outcome": "answered",
+        "verdict": "NOT_ELIGIBLE",
+        "reference": "Placement_Policy.pdf"
+      }
+    },
+    {
+      "id": "A12",
+      "org": "greenfield_university",
+      "type": "multi-condition decision",
+      "question": "My family income is 4 lakh, I'm a full-time student and I have no pending library fines. Am I eligible for the laptop loan?",
+      "expect": {
+        "outcome": "answered",
+        "verdict": "ELIGIBLE",
+        "reference": "Library_and_IT_Services.pdf"
+      }
+    },
+    {
+      "id": "A13",
+      "org": "greenfield_university",
+      "type": "direct information",
+      "question": "What is the late fine for returning library books?",
+      "expect": {
+        "outcome": "answered",
+        "contains_any": [
+          "Rs. 5",
+          "5 per book"
+        ],
+        "reference": "Library_and_IT_Services.pdf"
+      }
+    },
+    {
+      "id": "A14",
+      "org": "greenfield_university",
+      "type": "procedural",
+      "question": "How do I reset my Wi-Fi password?",
+      "expect": {
+        "outcome": "answered",
+        "contains_any": [
+          "Forgot Password",
+          "one-time password"
+        ],
+        "reference": "Library_and_IT_Services.pdf"
+      }
+    },
+    {
+      "id": "A15",
+      "org": "greenfield_university",
+      "type": "policy",
+      "question": "How much of my tuition fee is refunded if I withdraw within 15 days of classes starting?",
+      "expect": {
+        "outcome": "answered",
+        "contains_any": [
+          "80%"
+        ],
+        "reference": "Fee_Payment_and_Refund_Policy.pdf"
+      }
+    },
+    {
+      "id": "A16",
+      "org": "greenfield_university",
+      "type": "comparison",
+      "question": "Compare the eligibility for campus placement and internship credit.",
+      "expect": {
+        "outcome": "answered",
+        "reference": "Placement_Policy.pdf"
+      }
+    },
+    {
+      "id": "B1",
+      "org": "nimbus_technologies",
+      "type": "direct information",
+      "question": "How many days of annual leave do employees get?",
+      "expect": {
+        "outcome": "answered",
+        "contains_any": [
+          "24"
+        ],
+        "reference": "Leave_Policy.pdf"
+      }
+    },
+    {
+      "id": "B2",
+      "org": "nimbus_technologies",
+      "type": "procedural",
+      "question": "How do I apply for leave?",
+      "expect": {
+        "outcome": "answered",
+        "contains_any": [
+          "HRMS"
+        ],
+        "reference": "Leave_Policy.pdf"
+      }
+    },
+    {
+      "id": "B3",
+      "org": "nimbus_technologies",
+      "type": "multi-condition decision (multiple structured decisions)",
+      "question": "I have been with the company for 14 months, completed probation and my rating is 4. Can I work remotely from abroad for 20 days?",
+      "expect": {
+        "outcome": "answered",
+        "verdict": "ELIGIBLE",
+        "reference": "Work_From_Home_Policy.pdf"
+      }
+    },
+    {
+      "id": "B4",
+      "org": "nimbus_technologies",
+      "type": "multi-condition decision",
+      "question": "I joined 8 months ago and I am on a PIP. Can I get education reimbursement for an online course?",
+      "expect": {
+        "outcome": "answered",
+        "verdict": "NOT_ELIGIBLE",
+        "reference": "Learning_Assistance_Policy.pdf"
+      }
+    },
+    {
+      "id": "B5",
+      "org": "nimbus_technologies",
+      "type": "policy",
+      "question": "Can unused sick leave be carried forward?",
+      "expect": {
+        "outcome": "answered",
+        "contains_any": [
+          "cannot be carried forward",
+          "Sick leave cannot"
+        ],
+        "reference": "Leave_Policy.pdf"
+      }
+    },
+    {
+      "id": "B6",
+      "org": "nimbus_technologies",
+      "type": "comparison",
+      "question": "What is the difference between sabbatical leave and remote work abroad?",
+      "expect": {
+        "outcome": "answered"
+      }
+    },
+    {
+      "id": "B7",
+      "org": "nimbus_technologies",
+      "type": "not in knowledge base",
+      "question": "What is the company's stock option vesting schedule?",
+      "expect": {
+        "outcome": "not_found"
+      }
+    },
+    {
+      "id": "B8",
+      "org": "nimbus_technologies",
+      "type": "multi-condition decision",
+      "question": "I have 10 months of service and I'm moving to an office 350 km away. I am not serving a notice period. Am I eligible for relocation assistance?",
+      "expect": {
+        "outcome": "answered",
+        "verdict": "ELIGIBLE",
+        "reference": "Travel_and_Relocation_Policy.pdf"
+      }
+    },
+    {
+      "id": "B9",
+      "org": "nimbus_technologies",
+      "type": "multi-condition decision",
+      "question": "I've been in my current role for 12 months and my rating is 4. Can I apply for an internal job posting?",
+      "expect": {
+        "outcome": "answered",
+        "verdict": "NOT_ELIGIBLE",
+        "reference": "Internal_Job_Posting_and_Referral_Policy.pdf"
+      }
+    },
+    {
+      "id": "B10",
+      "org": "nimbus_technologies",
+      "type": "multi-condition decision (missing information)",
+      "question": "I'm a full-time employee. Am I eligible for the wellness allowance?",
+      "expect": {
+        "outcome": "needs_info",
+        "verdict": "NEEDS_INFO",
+        "reference": "Health_and_Wellness_Benefits.pdf"
+      }
+    },
+    {
+      "id": "B11",
+      "org": "nimbus_technologies",
+      "type": "direct information",
+      "question": "What is the daily allowance for travel to metro cities?",
+      "expect": {
+        "outcome": "answered",
+        "contains_any": [
+          "3,500"
+        ],
+        "reference": "Travel_and_Relocation_Policy.pdf"
+      }
+    },
+    {
+      "id": "B12",
+      "org": "nimbus_technologies",
+      "type": "direct information",
+      "question": "How much referral bonus do I get for referring a senior engineer?",
+      "expect": {
+        "outcome": "answered",
+        "contains_any": [
+          "50,000"
+        ],
+        "reference": "Internal_Job_Posting_and_Referral_Policy.pdf"
+      }
+    },
+    {
+      "id": "B13",
+      "org": "nimbus_technologies",
+      "type": "procedural",
+      "question": "How do I claim my travel expenses?",
+      "expect": {
+        "outcome": "answered",
+        "contains_any": [
+          "New Claim",
+          "receipts"
+        ],
+        "reference": "Travel_and_Relocation_Policy.pdf"
+      }
+    },
+    {
+      "id": "B14",
+      "org": "nimbus_technologies",
+      "type": "policy",
+      "question": "Can I add my parents to the health insurance?",
+      "expect": {
+        "outcome": "answered",
+        "contains_any": [
+          "12,000",
+          "April"
+        ],
+        "reference": "Health_and_Wellness_Benefits.pdf"
+      }
+    },
+    {
+      "id": "X1",
+      "org": "nimbus_technologies",
+      "type": "tenant isolation (Org A's content asked to Org B)",
+      "question": "What is the GPA requirement for the Merit Scholarship?",
+      "expect": {
+        "outcome": "not_found"
+      }
+    },
+    {
+      "id": "X2",
+      "org": "greenfield_university",
+      "type": "tenant isolation (Org B's content asked to Org A)",
+      "question": "How many days of paternity leave does Nimbus give?",
+      "expect": {
+        "outcome": "not_found"
+      }
+    }
+  ]
+}
